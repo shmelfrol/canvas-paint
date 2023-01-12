@@ -1,30 +1,47 @@
 import React, {useState} from 'react';
 import "../styles/toolbar.scss"
 import {useDispatch, useSelector} from "react-redux";
-import {setTool} from "../redux/actionCreators/paint";
+import {setFillColor, setStrokeColor, setTool} from "../redux/actionCreators/paint";
 import {TOOLS} from "../redux/reducers/PaintReducer";
+import Brush from "../tools/Brush";
+import Rect from "../tools/Rect";
+import Circle from "../tools/Circle";
+import Line from "../tools/Line";
+import {undo, redo} from "../redux/actionCreators/canvas";
 
 const Toolbar = () => {
     const dispatch = useDispatch()
     const paintState = useSelector((state)=>state.paint.tool)
-   //console.log(paintState)
 
-    const clickHandler = (e) => {
-        e.preventDefault()
-        let target = e.target
-      dispatch(setTool(target.name))
+    const canvasState = useSelector(state => state.canvas.canvas)
+    const strokeColor = useSelector(state => state.paint.canvas)
+
+    const changeColorHandler= (e)=>{
+        let color=e.target.value
+        dispatch(setStrokeColor(color))
+        dispatch(setFillColor(color))
+    }
+
+  const undoClickHandler =() =>{
+        console.log("undo")
+        dispatch(undo())
+  }
+
+    const redoClickHandler =() =>{
+        console.log("redo!!!!!!!!!!!!!!!")
+        dispatch(redo())
     }
 
     return (
         <div className="toolBar">
-            <button className="toolBar__btn brush" onClick={clickHandler} name={TOOLS.brush}></button>
-            <button className="toolBar__btn rect" onClick={clickHandler} name={TOOLS.rect}></button>
-            <button className="toolBar__btn circle" onClick={clickHandler} name={TOOLS.circle}></button>
-            <button className="toolBar__btn eraser" onClick={clickHandler} name={TOOLS.eraser}></button>
-            <button className="toolBar__btn line" onClick={clickHandler} name={TOOLS.line}></button>
-            <input type="color" style={{margin:"5px"}}/>
-            <button className="toolBar__btn undo"></button>
-            <button className="toolBar__btn redo"></button>
+            <button className="toolBar__btn brush" onClick={()=>{dispatch(setTool(new Brush(canvasState)))}} name={TOOLS.brush}></button>
+            <button className="toolBar__btn rect" onClick={()=>{dispatch(setTool(new Rect(canvasState)))}} name={TOOLS.rect}></button>
+            <button className="toolBar__btn circle" onClick={()=>{dispatch(setTool(new Circle(canvasState)))}} name={TOOLS.circle}></button>
+            <button className="toolBar__btn eraser" onClick={()=>{dispatch(setTool(new Line(canvasState)))}} name={TOOLS.eraser}></button>
+            <button className="toolBar__btn line"  name={TOOLS.line}></button>
+            <input type="color" style={{margin:"5px"}} onChange={changeColorHandler}/>
+            <button className="toolBar__btn undo" onClick={undoClickHandler}></button>
+            <button className="toolBar__btn redo" onClick={redoClickHandler}></button>
             <button className="toolBar__btn save"></button>
         </div>
     );
