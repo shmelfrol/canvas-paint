@@ -13,7 +13,7 @@ const Toolbar = () => {
     const dispatch = useDispatch()
     const paintState = useSelector((state)=>state.paint.tool)
 
-    const canvasState = useSelector(state => state.canvas.canvas)
+    const canvasState = useSelector(state => state.canvas)
     const strokeColor = useSelector(state => state.paint.canvas)
 
     const changeColorHandler= (e)=>{
@@ -34,10 +34,10 @@ const Toolbar = () => {
 
     return (
         <div className="toolBar">
-            <button className="toolBar__btn brush" onClick={()=>{dispatch(setTool(new Brush(canvasState)))}} name={TOOLS.brush}></button>
-            <button className="toolBar__btn rect" onClick={()=>{dispatch(setTool(new Rect(canvasState)))}} name={TOOLS.rect}></button>
-            <button className="toolBar__btn circle" onClick={()=>{dispatch(setTool(new Circle(canvasState)))}} name={TOOLS.circle}></button>
-            <button className="toolBar__btn eraser" onClick={()=>{dispatch(setTool(new Line(canvasState)))}} name={TOOLS.eraser}></button>
+            <button className="toolBar__btn brush" onClick={()=>{dispatch(setTool(new Brush(canvasState.canvas, canvasState.socket, canvasState.sessionId)))}} name={TOOLS.brush}></button>
+            <button className="toolBar__btn rect" onClick={()=>{dispatch(setTool(new Rect(canvasState.canvas, canvasState.socket, canvasState.sessionId)))}} name={TOOLS.rect}></button>
+            <button className="toolBar__btn circle" onClick={()=>{dispatch(setTool(new Circle(canvasState.canvas, canvasState.socket, canvasState.sessionId)))}} name={TOOLS.circle}></button>
+            <button className="toolBar__btn eraser" onClick={()=>{dispatch(setTool(new Line(canvasState.canvas, canvasState.socket, canvasState.sessionId)))}} name={TOOLS.eraser}></button>
             <button className="toolBar__btn line"  name={TOOLS.line}></button>
             <input type="color" style={{margin:"5px"}} onChange={changeColorHandler}/>
             <button className="toolBar__btn undo" onClick={undoClickHandler}></button>
